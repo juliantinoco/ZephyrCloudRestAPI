@@ -42,7 +42,7 @@ def create_fetch_execute_update():
     #Updating Executin result
 
     statuses=[1]  # status for all the tests in the cycle
-    issue_ID=['issueID']
+    issue_ID=["issueID's"]
     for i in  range(0,len(execution_id)):
         execution.update_execution(execution_id[i],project_Id,version_Id,cycle_Id,issue_ID[i],statuses[i])
 
@@ -52,19 +52,19 @@ def createTest_fetchCyle_createExecution():
     jira = JiraResources(URL, USER, TOKEN)
 
     # fetching project ID
-    project_Id = jira.get_project_id_with_name("Robot_FW_Zephyr")
+    project_Id = jira.get_project_id_with_name("Project Name")
     # fetching version ID
-    version_Id = jira.get_version_id_with_name("Release1", project_Id)
+    version_Id = jira.get_version_id_with_name("Version Name", project_Id)
 
     # Create test
-    dict_issue = jira.create_issue("10005", project_Id, "database validation",
-                                   "verify for the db correct data is displayed over UI")
+    issue_list = jira.create_issue("10005", project_Id, "Summary",
+                                   "Description")
 
     # Get Cycle
-    cycle_Id=cycle.get_cycle_with_name(version_Id, project_Id, "Sample Cycle")
+    cycle_Id=cycle.get_cycle_with_name(version_Id, project_Id, "Cycle Name")
 
     # Create Execution
-    execution.create_execution(project_Id,version_Id,cycle_Id,dict_issue['issue_Id'],1)
+    execution.create_execution(project_Id,version_Id,cycle_Id,issue_list[0][1],1)
 
 
 
