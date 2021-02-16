@@ -10,7 +10,6 @@ class JWTGenerator:
         self.access_key = access_key
         self.secret_key = secret_key
         self.expire = 360
-        #self.canonical_path = canonical_path
 
     def generate_jwt(self,canonical_path):
         payload = {
@@ -25,7 +24,7 @@ class JWTGenerator:
 
     def headers(self):
         headers = {
-            'Authorization': 'JWT '+self.jwt(),
+            'Authorization': f"JWT {self.jwt()}",
             'Content-Type': 'application/json',
             'zapiAccessKey': self.access_key
         }
