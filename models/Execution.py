@@ -154,3 +154,52 @@ class ExecutionResource:
             json_result = json.loads(raw_result.text)
 
             print(json.dumps(json_result, indent=4, sort_keys=True))
+
+    def get_steps_results(self, execution_id, issue_id):
+        """
+        This function return all StepsResults associated to a execution_id and issue_id
+        """
+        print("Getting StepsResults")
+        end_point = "stepresult/search"
+        canonical_path = f"GET&{self.RELATIVE_PATH}{end_point}&executionId={execution_id}&issueId={issue_id}"
+        token = self.jwt.generate_jwt(canonical_path)
+
+        headers = {
+            'Authorization': f"JWT {token}",
+            'content-Type': None,
+            'zapiAccessKey': self.access_key
+        }
+
+        # Get stepsResults
+        raw_result = requests.get(f"{self.ZAPI_CLOUD_URL}{self.RELATIVE_PATH}{end_point}",
+                                  params={
+                                      "executionId": execution_id,
+                                      "issueId": int(issue_id),
+                                  },
+                                  headers=headers)
+
+        return raw_result.json()
+
+    def update_step_result(self, execution_id, issue_id, step_id, step_result_id, status):
+        print("Updating StepsResults")
+        # UPDATE STATUS FOR EACH STEP
+        end_point = "stepresult/"
+        canonical_path = f"PUT&{self.RELATIVE_PATH}{end_point}{step_result_id}&"
+        token = self.jwt.generate_jwt(canonical_path)
+
+        headers = {
+            'Authorization': f"JWT {token}",
+            'content-Type': 'application/json',
+            'zapiAccessKey': self.access_key
+        }
+
+        raw_result = requests.put(f"{self.ZAPI_CLOUD_URL}{self.RELATIVE_PATH}{end_point}{step_result_id}",
+                                  json={
+                                      'status': {'id': status},
+                                      'issueId': int(issue_id),
+                                      'stepId': step_id,
+                                      'executionId': execution_id,
+                                  },
+                                  headers=headers)
+
+        return raw_result.text
