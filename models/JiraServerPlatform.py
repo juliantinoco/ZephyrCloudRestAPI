@@ -1,4 +1,4 @@
-from util import tools
+from utils import tools
 
 import requests
 import json
@@ -104,3 +104,18 @@ class JiraResources:
 
             print(f"Issure create with key {issue_key} and ID {issue_id}")
             return issue_key, issue_id
+
+    def get_issue_id_with_issue_name(self, issue_name):
+        end_point = f"/rest/api/latest/issue/{issue_name}"
+        response = requests.get(self.url + end_point, auth=(self.user, self.token))
+        assert response.status_code == 200
+
+        if tools.is_json(response.text):
+            # JSON RESPONSE: convert response to JSON
+            json_result = json.loads(response.text)
+
+            # PRINT RESPONSE: pretty print with 4 indent
+            # print(json.dumps(json_result, indent=4, sort_keys=True))
+            issue_id = jp.match1("id", json_result)
+            print(f"Issue id for key {issue_name} is:{issue_id}")
+            return issue_id

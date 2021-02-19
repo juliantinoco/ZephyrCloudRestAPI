@@ -11,7 +11,7 @@ class JWTGenerator:
         self.secret_key = secret_key
         self.expire = 360
 
-    def generate_jwt(self,canonical_path):
+    def generate_jwt(self, canonical_path):
         payload = {
             'sub': self.account_id,
             'qsh': hashlib.sha256(canonical_path.encode('utf-8')).hexdigest(),
@@ -19,7 +19,7 @@ class JWTGenerator:
             'exp': time.time()+self.expire,
             'iat': time.time()
         }
-        token = jwt.encode(payload, self.secret_key, algorithm='HS256').strip().decode('utf-8')
+        token = jwt.encode(payload, self.secret_key, algorithm='HS256').strip()
         return token
 
     def headers(self):

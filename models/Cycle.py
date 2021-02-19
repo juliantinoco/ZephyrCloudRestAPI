@@ -1,5 +1,5 @@
-from util.JWTGenerator import JWTGenerator
-from util import tools
+from utils.JWTGenerator import JWTGenerator
+from utils import tools
 
 import requests
 import json
@@ -21,7 +21,7 @@ class CycleResource:
     def create_cycle(self, cycle_name, project_id, version_id):
 
         end_point = 'cycle?expand=executionSummaries&clonedCycleId='
-        canonical_path = "POST&{self.RELATIVE_PATH}cycle&clonedCycleId=&expand=executionSummaries"
+        canonical_path = 'POST&' + self.RELATIVE_PATH + 'cycle' + '&clonedCycleId=&expand=executionSummaries'
         token = self.jwt.generate_jwt(canonical_path)
 
         # REQUEST HEADER: to create cycle

@@ -1,5 +1,5 @@
-from util.JWTGenerator import JWTGenerator
-from util import tools
+from utils.JWTGenerator import JWTGenerator
+from utils import tools
 
 import json
 import requests
@@ -45,7 +45,8 @@ class ExecutionResource:
                                    headers=headers, json=add_test)
         # print(raw_result.text)
         assert raw_result.status_code == 200
-        print("Tests {}  are added to cycle".format(issues))
+        print(f"Tests {issues} are added to cycle")
+        return raw_result.text
 
     """Returns the list of Execution ID's for the cycle"""
     def get_list_of_execution_by_cycle(self, cycle_id, project_id, version_id):
@@ -117,7 +118,7 @@ class ExecutionResource:
 
                 # JSON RESPONSE: convert response to JSON
                 json_result = json.loads(raw_result.text)
-                status_code = jp.match1("$.execution.status.id",json_result)
+                status_code = jp.match1("$.execution.status.id", json_result)
                 assert status_code == status
                 print("Test run updated successfully for issue id {}".format(issue_id))
                 # PRINT RESPONSE: pretty print with 4 indent
@@ -126,7 +127,7 @@ class ExecutionResource:
             print("The request didn't run")
 
     """Creates an execution for an particular issue_ID"""
-    def create_execution(self, project_id, version_id, cycle_id, issue_id, status):
+    def create_execution(self, issue_id, project_id, version_id, cycle_id, status=tools.Status.PASS.value):
         end_point = 'execution'
         canonical_path = f"POST&{self.RELATIVE_PATH}{end_point}&"
 
@@ -141,7 +142,7 @@ class ExecutionResource:
         # REQUEST PAYLOAD: to Create Execution
         create_execution = {
             'status': {"id": status},
-            'issueId': int(issue_id),
+            'issueId': issue_id,
             'projectId': int(project_id),
             'versionId': int(version_id),
             'cycleId': cycle_id
