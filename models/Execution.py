@@ -156,6 +156,8 @@ class ExecutionResource:
 
             print(json.dumps(json_result, indent=4, sort_keys=True))
 
+            return raw_result.json()
+
     def get_steps_results(self, execution_id, issue_id):
         """
         This function return all StepsResults associated to a execution_id and issue_id

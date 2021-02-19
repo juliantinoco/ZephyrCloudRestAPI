@@ -81,7 +81,10 @@ class Runner(object):
         for issue in issues:
             for key, value in issue.items():
                 print(f"Adding the issue {key} into the cycle {self.cycle_id}")
-                self.execution.create_execution(value['id'], self.project_id, self.version_id, self.cycle_id,
-                                                status=value['status_id'])
+                execution = self.execution.create_execution(value['id'], self.project_id, self.version_id,
+                                                            self.cycle_id, status=value['status_id'])
+
+                self.execution.update_execution(execution['execution']['id'], self.project_id, self.version_id,
+                                                self.cycle_id, value['id'], value['status_id'])
 
         return True

@@ -4,11 +4,11 @@ import json
 
 
 class Status(Enum):
+    UNEXECUTED = -1
     PASS = 1
     FAIL = 2
     WIP = 3
     BLOCKED = 4
-    UNEXECUTED = 5
 
 
 def is_json(data):
