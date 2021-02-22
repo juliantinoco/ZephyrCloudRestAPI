@@ -1,24 +1,13 @@
 from models.Cycle import CycleResource
 from models.Execution import ExecutionResource
 from models.JiraServerPlatform import JiraResources
-from utils import tools
-
-# ZEPHYR INFORMATION
-
-ACCOUNT_ID = ''
-ACCESS_KEY = ''
-SECRET_KEY = ''
-
-# JIRA INFORMATION
-TOKEN = ''
-USER = ''
-URL = ""
+import config
 
 
 class Runner(object):
     def __init__(self, version_name, cycle_name, project_name):
-        self.jira = JiraResources(URL, USER, TOKEN)
-        self.cycle = CycleResource(ACCOUNT_ID, ACCESS_KEY, SECRET_KEY)
+        self.jira = JiraResources(config.URL, config.USER, config.TOKEN)
+        self.cycle = CycleResource(config.ACCOUNT_ID, config.ACCESS_KEY, config.SECRET_KEY)
 
         self.project_id = self.jira.get_project_id_with_name(project_name)
 
@@ -28,7 +17,7 @@ class Runner(object):
             self.version_id = self.jira.get_version_id_with_name(version_name, self.project_id)
 
         self.cycle_id = self.cycle.create_cycle(cycle_name, self.project_id, self.version_id)
-        self.execution = ExecutionResource(ACCOUNT_ID, ACCESS_KEY, SECRET_KEY)
+        self.execution = ExecutionResource(config.ACCOUNT_ID, config.ACCESS_KEY, config.SECRET_KEY)
 
     def create_fetch_execute_update(self, issues_id):
         # Add tests to the cycle
