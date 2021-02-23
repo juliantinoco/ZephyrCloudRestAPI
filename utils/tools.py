@@ -36,3 +36,16 @@ def organize_issues_id(issues_status):
         issues_formatted.append(current)
 
     return issues_formatted
+
+
+def get_json_results(result):
+    """
+    This function will return the answer if the answer code is 200.
+    Otherwise, the error code is logged for troubleshooting
+    """
+    if result.status_code == 200 and is_json(result.text):
+        return json.loads(result.text)
+
+    else:
+        print(f"The result code not successful. The error code is: {result.status_code}")
+        return False

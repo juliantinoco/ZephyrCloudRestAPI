@@ -4,12 +4,13 @@ from utils import tools
 import json
 import requests
 import jsonpath_rw_ext as jp
+import config
 
 
 class ExecutionResource:
 
-    ZAPI_CLOUD_URL = "https://prod-api.zephyr4jiracloud.com/connect"
-    RELATIVE_PATH = '/public/rest/api/1.0/'
+    ZAPI_CLOUD_URL = config.ZAPI_CLOUD_URL
+    RELATIVE_PATH = config.RELATIVE_PATH
 
     def __init__(self, account_id, access_key,secret_key):
         self.account_id = account_id
@@ -43,9 +44,12 @@ class ExecutionResource:
         print("Adding tests to the cycle")
         raw_result = requests.post(self.ZAPI_CLOUD_URL + self.RELATIVE_PATH + end_point + cycle_id,
                                    headers=headers, json=add_test)
-        # print(raw_result.text)
-        assert raw_result.status_code == 200
-        print(f"Tests {issues} are added to cycle")
+
+        if tools.get_json_results(raw_result):
+            print(f"Tests {issues} are added to cycle")
+        else:
+            raise Exception(f"An error was detected. Details in: {raw_result}")
+
         return raw_result.text
 
     """Returns the list of Execution ID's for the cycle"""

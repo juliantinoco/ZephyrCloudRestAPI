@@ -4,12 +4,13 @@ from utils import tools
 import requests
 import json
 import jsonpath_rw_ext as jp
+import config
 
 
 class CycleResource:
 
-    ZAPI_CLOUD_URL = "https://prod-api.zephyr4jiracloud.com/connect"
-    RELATIVE_PATH = '/public/rest/api/1.0/'
+    ZAPI_CLOUD_URL = config.ZAPI_CLOUD_URL
+    RELATIVE_PATH = config.RELATIVE_PATH
 
     def __init__(self, account_id, access_key,secret_key):
         self.account_id = account_id
@@ -41,18 +42,14 @@ class CycleResource:
         # MAKE REQUEST:
         print("Creating Cycle")
         raw_result = requests.post(self.ZAPI_CLOUD_URL + self.RELATIVE_PATH + end_point, headers=headers, json=cycle)
+        json_result = tools.get_json_results(raw_result)
 
-        if tools.is_json(raw_result.text):
-            # JSON RESPONSE: convert response to JSON
-            json_result = json.loads(raw_result.text)
-
-            # PRINT RESPONSE: pretty print with 4 indent
-            # print(json.dumps(json_result, indent=4, sort_keys=True))
-
-            # Get cycle ID
+        if json_result:
             cycle_id = jp.match1("id", json_result)
             print(f"Cycle created with ID: {cycle_id}")
             return cycle_id
+        else:
+            raise Exception(f"An error was detected. Details in: {raw_result}")
 
     """Returns the cycle_Id corresponding to cycle_name"""
     def get_cycle_with_name(self, version_id, project_id, cycle_name):
@@ -73,15 +70,11 @@ class CycleResource:
         raw_result = requests.get(f"{self.ZAPI_CLOUD_URL}{self.RELATIVE_PATH}{end_point}?versionId={version_id}"
                                   f"&expand=executionSummaries&projectId={project_id}", headers=headers)
 
-        if tools.is_json(raw_result.text):
-            # JSON RESPONSE: convert response to JSON
-            json_result = json.loads(raw_result.text)
+        json_result = tools.get_json_results(raw_result)
 
-            # PRINT RESPONSE: pretty print with 4 indent
-            # print(json.dumps(json_result, indent=4, sort_keys=True))
-
-            # Get cycle id with name
+        if json_result:
             cycle_id = jp.match1("$[?(name='" + cycle_name + "')].id", json_result)
             print(cycle_id)
-
             return cycle_id
+        else:
+            raise Exception(f"An error was detected. Details in: {raw_result}")
